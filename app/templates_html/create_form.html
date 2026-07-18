@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block title %}Create {{ entry.name }} — prelegal{% endblock %}
+{% block main_class %}narrow{% endblock %}
+{% block content %}
+  <a class="back-link" href="/template/{{ entry.filename }}">&larr; {{ entry.name }}</a>
+
+  <div class="hero" style="margin-bottom: 2rem;">
+    <p class="eyebrow">{{ entry.name }}</p>
+    <h1 style="font-size: clamp(1.75rem, 4vw, 2.25rem);">Create your agreement</h1>
+    <p style="margin-bottom: 0;">Fill in the parties and terms below. You'll get a chance to review before downloading. Anything left blank stays marked as a placeholder in the document.</p>
+  </div>
+
+  <form method="post" action="/create/{{ entry.filename }}/preview" class="nda-form">
+    {% set ns = namespace(step=0) %}
+    {% for role, fields in schema.party_field_groups() %}
+      {% set ns.step = ns.step + 1 %}
+      <div class="form-section">
+        <div class="form-section-header">
+          <span class="step-index">{{ ns.step }}</span>
+          <h2>{{ role }}</h2>
+        </div>
+        <div class="form-grid">
+          {% for key, label, placeholder, required in fields %}
+            <div class="field">
+              <label for="{{ key }}">{{ label }}</label>
+              <input type="text" id="{{ key }}" name="{{ key }}" placeholder="{{ placeholder }}" value="{{ values.get(key, '') }}" {% if required %}required{% endif %}>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+
+    {% for group, fields in schema.value_field_groups() %}
+      {% set ns.step = ns.step + 1 %}
+      <div class="form-section">
+        <div class="form-section-header">
+          <span class="step-index">{{ ns.step }}</span>
+          <h2>{{ group }}</h2>
+        </div>
+        <div class="form-grid">
+          {% for f in fields %}
+            <div class="field">
+              <label for="{{ f.key }}">{{ f.label }}</label>
+              <input type="text" id="{{ f.key }}" name="{{ f.key }}" value="{{ values.get(f.key, '') }}">
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+
+    <button type="submit" class="btn btn-primary">Preview document</button>
+  </form>
+{% endblock %}
+
+{% block extra_style %}
+  <style>
+    .nda-form { margin-top: 0; }
+    .form-section {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      padding: 1.5rem 1.75rem 1.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .form-section-header {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      margin-bottom: 1.25rem;
+    }
+    .step-index {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--field-bg);
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    .form-section-header h2 {
+      margin: 0;
+      font-size: 1.05rem;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+    .field label {
+      display: block;
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 0.4rem;
+      font-weight: 500;
+    }
+    .field input[type="text"] {
+      width: 100%;
+      padding: 0.65rem 0.8rem;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      background: var(--field-bg);
+      color: var(--fg);
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: box-shadow 0.15s var(--ease), border-color 0.15s var(--ease);
+    }
+    .field input[type="text"]::placeholder { color: var(--muted); opacity: 0.7; }
+    .field input[type="text"]:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px var(--highlight-bg);
+    }
+    .nda-form > .btn { margin-top: 0.5rem; }
+  </style>
+{% endblock %}

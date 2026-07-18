@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}{{ entry.name }} — prelegal{% endblock %}
+{% block main_class %}narrow{% endblock %}
+{% block content %}
+  <a class="back-link" href="/">&larr; All templates</a>
+  <div class="doc-header">
+    <span class="badge">Standard template</span>
+    <h1>{{ entry.name }}</h1>
+    <a class="btn btn-primary" style="margin-top: 1.25rem;" href="/create/{{ entry.filename }}">Fill in and create this document</a>
+  </div>
+  <div class="doc">{{ content|safe }}</div>
+{% endblock %}

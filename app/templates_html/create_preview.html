@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}{{ entry.name }} preview — prelegal{% endblock %}
+{% block main_class %}narrow{% endblock %}
+{% block content %}
+  <div class="preview-bar">
+    <a class="back-link" href="/create/{{ entry.filename }}" style="margin-bottom:0;">&larr; Edit details</a>
+    <form method="post" action="/create/{{ entry.filename }}/download">
+      {% for key, val in values.items() %}
+        <input type="hidden" name="{{ key }}" value="{{ val }}">
+      {% endfor %}
+      <button type="submit" class="btn btn-primary">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download .docx
+      </button>
+    </form>
+  </div>
+
+  <div class="doc-header">
+    <span class="badge">Preview</span>
+    <h1>{{ entry.name }}</h1>
+  </div>
+
+  <div class="doc">{{ content|safe }}</div>
+{% endblock %}
+
+{% block extra_style %}
+  <style>
+    .preview-bar {
+      position: sticky;
+      top: 52px;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 0;
+      margin-bottom: 1.5rem;
+      background: var(--nav-bg);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .filled-field {
+      background: var(--highlight-bg);
+      border-radius: 4px;
+      padding: 0.05rem 0.3rem;
+    }
+    .empty-field {
+      color: var(--danger);
+      font-style: italic;
+    }
+  </style>
+{% endblock %}
